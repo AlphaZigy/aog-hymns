@@ -307,7 +307,7 @@ const Settings: React.FC = () => {
           visible={menuVisible}
           onDismiss={closeMenu}
           contentStyle={{ backgroundColor: colors.surface, borderRadius: 8 }}
-          anchor={{ x: 300, y: 60 }}>
+          anchor={{ x: 800, y: 20 }}>
           <Menu.Item
             key="menu-item-1"
             onPress={() => navigateAndCloseMenu("hymns")}

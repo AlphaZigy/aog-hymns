@@ -66,7 +66,6 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
     () => getThemedColors(settings.isDarkMode),
     [settings.isDarkMode]
   );
-  const [isTextSelectable, setIsTextSelectable] = useState(false);
   const [iconScale] = useState(new Animated.Value(1));
 
   if (!route) {
@@ -123,9 +122,21 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
     navigation.navigate(screenName);
   };
 
-  // Simple long press handler - just enable text selection
-  const onLongPress = useCallback((): void => {
-    setIsTextSelectable(true);
+  // Improved text selection handler
+  const [selectionEnabled, setSelectionEnabled] = useState(false);
+
+  const handleLongPress = useCallback(() => {
+    setSelectionEnabled(true);
+    // Provide haptic feedback to indicate selection mode is enabled
+    if (require('expo-haptics')) {
+      const Haptics = require('expo-haptics');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }, []);
+
+  const handleTextLayout = useCallback(() => {
+    // Reset selection state when text layout changes
+    setSelectionEnabled(false);
   }, []);
 
   useFocusEffect(
@@ -300,11 +311,12 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
                   fontSize: settings.textSize,
                 },
               ]}
-              selectable={isTextSelectable}
-              onLongPress={onLongPress}
+              selectable={true}
+              onLongPress={handleLongPress}
+              onTextLayout={handleTextLayout}
               accessibilityLabel={`Mission Song ${number}: ${title}`}
               accessibilityRole="text"
-              accessibilityHint="Long press to enable text selection for copying">
+              accessibilityHint="Long press on text to select and copy">
               {song}
             </Text>
           </View>
@@ -362,7 +374,7 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
             accessibilityLabel="Settings - Navigate to app settings"
           />
           <Menu.Item
-            key="menu-item-5"
+            key="menu-item-6"
             onPress={() => navigateAndCloseMenu("About")}
             title="About"
             leadingIcon="information"

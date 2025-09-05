@@ -64,7 +64,6 @@ const ViewHymn: React.FC<ViewHymnProps> = ({ route }) => {
     () => getThemedColors(settings.isDarkMode),
     [settings.isDarkMode]
   );
-  const [isTextSelectable, setIsTextSelectable] = useState(false);
 
   if (!route) {
     return null; // or some error component
@@ -120,17 +119,22 @@ const ViewHymn: React.FC<ViewHymnProps> = ({ route }) => {
     animateIcon,
   ]);
 
-  // Simple long press handler - just enable text selection
-  const onLongPress = useCallback((): void => {
-    setIsTextSelectable(true);
+  // Improved text selection handler
+  const [selectionEnabled, setSelectionEnabled] = useState(false);
+
+  const handleLongPress = useCallback(() => {
+    setSelectionEnabled(true);
+    // Provide haptic feedback to indicate selection mode is enabled
+    if (require('expo-haptics')) {
+      const Haptics = require('expo-haptics');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
   }, []);
 
-  // Disable text selection when tapping normally
-  const onPress = useCallback((): void => {
-    if (isTextSelectable) {
-      setIsTextSelectable(false);
-    }
-  }, [isTextSelectable]);
+  const handleTextLayout = useCallback(() => {
+    // Reset selection state when text layout changes
+    setSelectionEnabled(false);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -263,9 +267,7 @@ const ViewHymn: React.FC<ViewHymnProps> = ({ route }) => {
           accessibilityLabel="Hymn content"
           accessibilityRole="scrollbar"
           accessibilityHint="Scroll to read the complete hymn text">
-          <TouchableOpacity
-            onLongPress={onLongPress}
-            onPress={onPress}
+          <View
             style={[
               styles.hymnContainer,
               {
@@ -273,11 +275,7 @@ const ViewHymn: React.FC<ViewHymnProps> = ({ route }) => {
                   ? "#1f1f1f"
                   : "transparent",
               },
-            ]}
-            activeOpacity={0.8}
-            accessibilityLabel={`Hymn text: ${title}`}
-            accessibilityRole="text"
-            accessibilityHint="Long press to enable text selection for copying">
+            ]}>
             <Text
               style={[
                 themedStyles.hymnText,
@@ -287,12 +285,15 @@ const ViewHymn: React.FC<ViewHymnProps> = ({ route }) => {
                   fontSize: settings.textSize,
                 },
               ]}
-              selectable={isTextSelectable}
+              selectable={true}
+              onLongPress={handleLongPress}
+              onTextLayout={handleTextLayout}
               accessibilityLabel={`Hymn ${number}: ${title}`}
-              accessibilityRole="text">
+              accessibilityRole="text"
+              accessibilityHint="Long press on text to select and copy">
               {hymn}
             </Text>
-          </TouchableOpacity>
+          </View>
         </ScrollView>
 
         <FAB

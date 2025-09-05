@@ -230,7 +230,7 @@ const MissionSongs = () => {
             shadowOpacity: 0.25,
             shadowRadius: 4,
           }}
-          anchor={{ x: 300, y: 60 }}>
+          anchor={{ x: 800, y: 20 }}>
           <Menu.Item
             key="menu-item-1"
             onPress={() => navigateAndCloseMenu("hymns")}
@@ -262,10 +262,10 @@ const MissionSongs = () => {
             key="menu-item-5"
             onPress={() => navigateAndCloseMenu("About")}
             title="About"
-            leadingIcon="info"
+            leadingIcon="information"
             style={{ backgroundColor: colors.surface }}
             titleStyle={{ color: colors.text }}
-            accessibilityLabel="Settings - Navigate to app settings"
+            accessibilityLabel="About - Navigate to app about page"
           />
           <Divider />
           <Menu.Item
