@@ -9,7 +9,7 @@ import {
   ImageBackground,
   Share,
 } from 'react-native';
-import { Appbar, Card, Divider, Menu, Button } from 'react-native-paper';
+import { Appbar, Card, Divider, Menu, Button, SegmentedButtons } from 'react-native-paper';
 import { Icon } from '@rneui/themed';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -70,6 +70,14 @@ const Settings: React.FC = () => {
       await updateSettings({ isDarkMode: value });
     } catch (error) {
       console.error('Error updating theme:', error);
+    }
+  };
+
+  const handleKeepScreenOnToggle = async (value: boolean) => {
+    try {
+      await updateSettings({ keepScreenOn: value });
+    } catch (error) {
+      console.error('Error updating keep screen on setting:', error);
     }
   };
 
@@ -146,44 +154,48 @@ const Settings: React.FC = () => {
           <Card style={[styles.card, { backgroundColor: colors.surface }]}>
             <Card.Content>
               <Text 
-                style={[styles.sectionTitle, { color: colors.text }]}
+                style={[styles.sectionTitle, { color: colors.text, fontSize: settings.textSize + 4 }]}
                 accessibilityRole="header"
               >
                 📝 Text & Display
               </Text>
               <Divider style={[styles.divider, { backgroundColor: colors.border }]} />
               
-              <Text style={[styles.settingLabel, { color: colors.text }]}>Font Size</Text>
-              <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+              <Text style={[styles.settingLabel, { color: colors.text, fontSize: settings.textSize }]}>Font Size</Text>
+              <Text style={[styles.settingDescription, { color: colors.textSecondary, fontSize: settings.textSize - 2 }]}>
                 Choose your preferred text size for better readability
               </Text>
               
-              <View style={styles.fontSizeContainer}>
-                {['small', 'medium', 'large'].map((size) => (
-                  <TouchableOpacity
-                    key={size}
-                    style={[
-                      styles.fontSizeButton,
-                      { borderColor: colors.border, backgroundColor: colors.surface },
-                      settings.fontSize === size && { backgroundColor: colors.primary, borderColor: colors.primary }
-                    ]}
-                    onPress={() => handleFontSizeChange(size as 'small' | 'medium' | 'large')}
-                    accessibilityLabel={`Set font size to ${size}`}
-                    accessibilityRole="button"
-                    accessibilityHint={`Changes the text size throughout the app to ${size}`}
-                    accessibilityState={{ selected: settings.fontSize === size }}
-                  >
-                    <Text style={[
-                      styles.fontSizeButtonText,
-                      { color: colors.text },
-                      settings.fontSize === size && { color: '#fff' },
-                      { fontSize: size === 'small' ? 12 : size === 'medium' ? 16 : 20 }
-                    ]}>
-                      {size.charAt(0).toUpperCase() + size.slice(1)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <SegmentedButtons
+                value={settings.fontSize}
+                onValueChange={(value) => handleFontSizeChange(value as 'small' | 'medium' | 'large')}
+                buttons={[
+                  {
+                    value: 'small',
+                    label: 'Small',
+                    icon: 'format-size',
+                  },
+                  {
+                    value: 'medium',
+                    label: 'Medium',
+                    icon: 'format-size',
+                  },
+                  {
+                    value: 'large',
+                    label: 'Large',
+                    icon: 'format-size',
+                  },
+                ]}
+                style={{ marginVertical: 16 }}
+                theme={{
+                  colors: {
+                    primary: colors.primary,
+                    onSurface: colors.text,
+                    surface: colors.surface,
+                    outline: colors.border,
+                  },
+                }}
+              />
 
               <Text 
                 style={[styles.previewText, { fontSize: settings.textSize, color: colors.text, backgroundColor: colors.background }]}
@@ -199,7 +211,7 @@ const Settings: React.FC = () => {
           <Card style={[styles.card, { backgroundColor: colors.surface }]}>
             <Card.Content>
               <Text 
-                style={[styles.sectionTitle, { color: colors.text }]}
+                style={[styles.sectionTitle, { color: colors.text, fontSize: settings.textSize + 4 }]}
                 accessibilityRole="header"
               >
                 🎨 Appearance
@@ -208,8 +220,8 @@ const Settings: React.FC = () => {
               
               <View style={styles.switchContainer}>
                 <View style={styles.switchTextContainer}>
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>Dark Mode</Text>
-                  <Text style={[styles.settingDescription, { color: colors.textSecondary }]}>
+                  <Text style={[styles.settingLabel, { color: colors.text, fontSize: settings.textSize }]}>Dark Mode</Text>
+                  <Text style={[styles.settingDescription, { color: colors.textSecondary, fontSize: settings.textSize - 2 }]}>
                     Switch to dark theme for comfortable reading in low light
                   </Text>
                 </View>
@@ -224,6 +236,25 @@ const Settings: React.FC = () => {
                   accessibilityHint="Toggles between light and dark theme throughout the app"
                 />
               </View>
+
+              <View style={styles.switchContainer}>
+                <View style={styles.switchTextContainer}>
+                  <Text style={[styles.settingLabel, { color: colors.text, fontSize: settings.textSize }]}>Keep Screen On</Text>
+                  <Text style={[styles.settingDescription, { color: colors.textSecondary, fontSize: settings.textSize - 2 }]}>
+                    Prevent device from auto-locking while reading hymns
+                  </Text>
+                </View>
+                <Switch
+                  value={settings.keepScreenOn}
+                  onValueChange={handleKeepScreenOnToggle}
+                  trackColor={{ false: '#e0e0e0', true: colors.primary }}
+                  thumbColor={settings.keepScreenOn ? '#fff' : '#f4f3f4'}
+                  style={styles.switch}
+                  accessibilityLabel={settings.keepScreenOn ? "Keep screen on enabled" : "Keep screen on disabled"}
+                  accessibilityRole="switch"
+                  accessibilityHint="Toggles whether the screen stays awake while reading hymns"
+                />
+              </View>
             </Card.Content>
           </Card>
 
@@ -231,7 +262,7 @@ const Settings: React.FC = () => {
           <Card style={[styles.card, { backgroundColor: colors.surface }]}>
             <Card.Content>
               <Text 
-                style={[styles.sectionTitle, { color: colors.text }]}
+                style={[styles.sectionTitle, { color: colors.text, fontSize: settings.textSize + 4 }]}
                 accessibilityRole="header"
               >
                 ℹ️ App Information
@@ -388,32 +419,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 16,
     lineHeight: 20,
-  },
-  fontSizeContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  fontSizeButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#e0e0e0',
-    backgroundColor: '#f8f8f8',
-    alignItems: 'center',
-  },
-  fontSizeButtonActive: {
-    borderColor: '#762006',
-    backgroundColor: '#762006',
-  },
-  fontSizeButtonText: {
-    fontFamily: 'Poppins-Bold',
-    color: '#333',
-  },
-  fontSizeButtonTextActive: {
-    color: '#fff',
   },
   previewText: {
     fontFamily: 'Poppins-Regular',

@@ -16,7 +16,7 @@ import { Appbar, Card, Avatar, Divider, Menu } from "react-native-paper";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { useSettings } from "../context/SettingsContext";
 import { createThemedStyles, getThemedColors } from "../utils/theme";
-import fonts from "../utils/constants/fonts";
+import Constants from "expo-constants";
 
 // Get screen dimensions for responsive design
 const { width } = Dimensions.get("window");
@@ -33,7 +33,6 @@ const About = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const { settings } = useSettings();
 
-  // Create themed styles based on current settings - recalculate when settings change
   const themedStyles = useMemo(() => createThemedStyles(settings), [settings]);
   const colors = useMemo(() => getThemedColors(settings.isDarkMode), [settings.isDarkMode]);
 
@@ -92,7 +91,7 @@ const About = () => {
 
   return (
     <>
-      <StatusBar barStyle={settings.isDarkMode ? "light-content" : "dark-content"} backgroundColor={colors.headerBackground} />
+      <StatusBar barStyle={settings.isDarkMode ? "dark-content" : "light-content"} />
       <ImageBackground
         source={require("../assets/images/back.png")}
         style={[styles.container, themedStyles.container]}>
@@ -145,7 +144,9 @@ const About = () => {
                 />
                 <View style={styles.appDetails}>
                   <Text style={[styles.appName, { color: colors.primary }]}>AOG Hymns</Text>
-                  <Text style={[styles.appVersion, { color: colors.textSecondary }]}>Version 1.1.2</Text>
+                  <Text style={[styles.appVersion, { color: colors.textSecondary }]}>
+                    Version {Constants.expoConfig?.version}
+                  </Text>
                   <Text style={[styles.appDescription, { color: colors.text }]}>
                     Digital hymnal songs for the Assemblies of God Church
                   </Text>
@@ -361,15 +362,14 @@ export default About;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
   darkOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '1f1f1f',
+    backgroundColor: "#1f1f1f",
     zIndex: 0,
   },
   headerTitle: {
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: "#666",
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Julietta-Messie-Demo',
     fontStyle: "italic",
   },
 });

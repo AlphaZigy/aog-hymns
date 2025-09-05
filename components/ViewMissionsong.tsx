@@ -18,6 +18,7 @@ import {
   useFocusEffect,
 } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Appbar, FAB, Menu, Divider } from "react-native-paper";
@@ -61,7 +62,10 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
 
   // Create themed styles based on current settings - recalculate when settings change
   const themedStyles = useMemo(() => createThemedStyles(settings), [settings]);
-  const colors = useMemo(() => getThemedColors(settings.isDarkMode), [settings.isDarkMode]);
+  const colors = useMemo(
+    () => getThemedColors(settings.isDarkMode),
+    [settings.isDarkMode]
+  );
   const [isTextSelectable, setIsTextSelectable] = useState(false);
   const [iconScale] = useState(new Animated.Value(1));
 
@@ -140,6 +144,29 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
     }, [navigation])
   );
 
+  // Handle screen wake based on settings
+  useFocusEffect(
+    useCallback(() => {
+      if (settings.keepScreenOn) {
+        activateKeepAwakeAsync();
+      }
+
+      return () => {
+        // Always deactivate on cleanup to ensure screen doesn't stay awake
+        deactivateKeepAwake();
+      };
+    }, [settings.keepScreenOn])
+  );
+
+  // Handle setting changes while screen is focused
+  useEffect(() => {
+    if (settings.keepScreenOn) {
+      activateKeepAwakeAsync();
+    } else {
+      deactivateKeepAwake();
+    }
+  }, [settings.keepScreenOn]);
+
   const shareApp = async () => {
     try {
       const result = await Share.share({
@@ -178,53 +205,65 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
 
   return (
     <>
-      <StatusBar style={settings.isDarkMode ? "light" : "dark"} hidden={true} />
-      <ImageBackground 
-        source={backgroundImg} 
+      <StatusBar style={settings.isDarkMode ? "dark" : "light"} hidden={true} />
+      <ImageBackground
+        source={backgroundImg}
         style={[styles.image, themedStyles.container]}>
         {/* Dark overlay for dark mode */}
-        {settings.isDarkMode && (
-          <View style={styles.darkOverlay} />
-        )}
+        {settings.isDarkMode && <View style={styles.darkOverlay} />}
         <Appbar.Header
-          style={{ 
-            backgroundColor: colors.headerBackground
+          style={{
+            backgroundColor: colors.headerBackground,
           }}
           statusBarHeight={0}
           theme={{
             colors: {
               primary: colors.headerBackground,
-              onSurface: colors.text === '#333333' ? '#fff' : colors.text,
-              text: colors.text === '#333333' ? '#fff' : colors.text,
+              onSurface: colors.text === "#333333" ? "#fff" : colors.text,
+              text: colors.text === "#333333" ? "#fff" : colors.text,
             },
           }}>
-          <Appbar.BackAction 
-            onPress={handleBackPress} 
-            color={colors.text === '#333333' ? '#fff' : colors.text}
+          <Appbar.BackAction
+            onPress={handleBackPress}
+            color={colors.text === "#333333" ? "#fff" : colors.text}
             accessibilityLabel="Go back"
             accessibilityRole="button"
             accessibilityHint="Go back to mission songs list"
           />
           <Appbar.Content
             title={`${number}  ${title}`}
-            color={colors.text === '#333333' ? '#fff' : colors.text}
+            color={colors.text === "#333333" ? "#fff" : colors.text}
             titleStyle={[
               themedStyles.headerTitle,
-              { 
-                fontFamily: fonts.Oswald, 
+              {
+                fontFamily: fonts.Oswald,
                 fontSize: 22,
-                color: colors.text === '#333333' ? '#fff' : colors.text
-              }
+                color: colors.text === "#333333" ? "#fff" : colors.text,
+              },
             ]}
           />
           <Animated.View style={{ transform: [{ scale: iconScale }] }}>
             <Appbar.Action
               icon={isCurrentlyFavourite ? "heart" : "heart-outline"}
               onPress={toggleFavourite}
-              color={isCurrentlyFavourite ? "#ff4444" : (colors.text === '#333333' ? '#fff' : colors.text)}
-              accessibilityLabel={isCurrentlyFavourite ? "Remove from favourites" : "Add to favourites"}
+              color={
+                isCurrentlyFavourite
+                  ? "#ff4444"
+                  : colors.text === "#333333"
+                  ? "#fff"
+                  : colors.text
+              }
+              accessibilityLabel={
+                isCurrentlyFavourite
+                  ? "Remove from favourites"
+                  : "Add to favourites"
+              }
               accessibilityRole="button"
-              accessibilityHint={isCurrentlyFavourite ? "Double tap to remove this mission song from favourites" : "Double tap to add this mission song to favourites"}
+              accessibilityHint={
+                isCurrentlyFavourite
+                  ? "Double tap to remove this mission song from favourites"
+                  : "Double tap to add this mission song to favourites"
+              }
             />
           </Animated.View>
         </Appbar.Header>
@@ -243,7 +282,7 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
           accessibilityLabel="Mission song content"
           accessibilityRole="scrollbar"
           accessibilityHint="Scroll to read the complete mission song text">
-          <View 
+          <View
             style={[
               styles.songContainer,
               {
@@ -253,7 +292,14 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
               },
             ]}>
             <Text
-              style={[themedStyles.hymnText, styles.song, { color: colors.text }]}
+              style={[
+                themedStyles.hymnText,
+                styles.song,
+                { 
+                  color: colors.text,
+                  fontSize: settings.textSize,
+                },
+              ]}
               selectable={isTextSelectable}
               onLongPress={onLongPress}
               accessibilityLabel={`Mission Song ${number}: ${title}`}
@@ -268,7 +314,7 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
           icon="menu"
           style={[styles.fab, { backgroundColor: colors.primary }]}
           onPress={openMenu}
-          color={colors.text === '#333333' ? '#fff' : colors.text}
+          color={colors.text === "#333333" ? "#fff" : colors.text}
           accessibilityLabel="Open menu"
           accessibilityRole="button"
           accessibilityHint="Opens navigation menu with options for Mission Songs, Hymns, Favourites, Settings, and Share"
@@ -299,7 +345,7 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
           />
           <Menu.Item
             key="menu-item-3"
-            onPress={() => navigateAndCloseMenu("Favourites")}
+            onPress={() => navigateAndCloseMenu("favourites")}
             title="Favourites"
             leadingIcon="heart"
             style={{ backgroundColor: colors.surface }}
@@ -314,6 +360,15 @@ const ViewMissionsong: React.FC<ViewMissionsongProps> = ({ route }) => {
             style={{ backgroundColor: colors.surface }}
             titleStyle={{ color: colors.text }}
             accessibilityLabel="Settings - Navigate to app settings"
+          />
+          <Menu.Item
+            key="menu-item-5"
+            onPress={() => navigateAndCloseMenu("About")}
+            title="About"
+            leadingIcon="information"
+            style={{ backgroundColor: colors.surface }}
+            titleStyle={{ color: colors.text }}
+            accessibilityLabel="About - Navigate to about screen"
           />
           <Divider />
           <Menu.Item
@@ -401,7 +456,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 0,
+    bottom: 50,
   },
   hymn: {
     marginLeft: 10,
@@ -418,12 +473,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   darkOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#1f1f1f',
+    backgroundColor: "#1f1f1f",
   },
 });
 

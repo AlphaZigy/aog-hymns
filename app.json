@@ -1,12 +1,15 @@
 {
   "expo": {
     "name": "AOG Hymns",
-    "slug": "aog_hymns",
-    "version": "1.1.2",
-    "orientation": "portrait",
+    "slug": "AOG-Hymns",
+    "version": "1.1.5",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -16,12 +19,9 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
       "edgeToEdgeEnabled": true,
-      "package": "com.aogzim.hymns"
+      "package": "com.aogzim.hymns",
+      "versionCode": 9
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,8 +33,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "983ba388-793c-443d-903a-58add70d77af"
+        "projectId": "c154a5a5-0ee8-46d1-93b5-95329405ff85"
       }
-    }
+    },
+    "owner": "alphazigy"
   }
 }

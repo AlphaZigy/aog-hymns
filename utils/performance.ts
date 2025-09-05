@@ -1,4 +1,4 @@
-// Performance optimization utilities for the hymns app
+// Performance optimization utilities
 import { useMemo, useCallback, useRef, useState, useEffect } from 'react';
 
 // Debounce hook for search optimization

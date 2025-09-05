@@ -42,7 +42,10 @@ const Favourites: React.FC = () => {
 
   // Create themed styles based on current settings - recalculate when settings change
   const themedStyles = useMemo(() => createThemedStyles(settings), [settings]);
-  const colors = useMemo(() => getThemedColors(settings.isDarkMode), [settings.isDarkMode]);
+  const colors = useMemo(
+    () => getThemedColors(settings.isDarkMode),
+    [settings.isDarkMode]
+  );
 
   const openMenu = () => setmenuVisible(true);
 
@@ -82,20 +85,30 @@ const Favourites: React.FC = () => {
           })
         }
         activeOpacity={0.7}>
-        <View style={[styles.listItemContainer, themedStyles.listItem, { backgroundColor: colors.surface }]}>
+        <View
+          style={[
+            styles.listItemContainer,
+            themedStyles.listItem,
+            { backgroundColor: colors.surface },
+          ]}>
           <Image
             source={require("../assets/icon.png")}
             style={{ width: 50, height: 50, borderRadius: 50 }}
           />
           <View style={{ flex: 1, marginLeft: 16 }}>
-            <Text style={[styles.title, themedStyles.listItemTitle, { color: colors.text }]}>
+            <Text
+              style={[
+                styles.title,
+                themedStyles.listItemTitle,
+                { color: colors.text },
+              ]}>
               {item.title}
             </Text>
             <Text
               style={[
                 styles.subtitle,
                 themedStyles.listItemSubtitle,
-                { color: colors.textSecondary }
+                { color: colors.textSecondary },
               ]}>{`Hymn: ${item.number}`}</Text>
           </View>
           <Icon name="favorite" type="material" color="red" size={24} />
@@ -117,26 +130,30 @@ const Favourites: React.FC = () => {
         theme={{
           colors: {
             primary: colors.headerBackground,
-            onSurface: colors.text === '#333333' ? '#fff' : colors.text,
-            text: colors.text === '#333333' ? '#fff' : colors.text,
+            onSurface: colors.text === "#333333" ? "#fff" : colors.text,
+            text: colors.text === "#333333" ? "#fff" : colors.text,
           },
         }}>
         <Appbar.Action
           icon="menu"
-          color={colors.text === '#333333' ? '#fff' : colors.text}
+          color={colors.text === "#333333" ? "#fff" : colors.text}
           onPress={() => (navigation as any).toggleDrawer?.()}
           accessibilityLabel="Open menu"
           accessibilityRole="button"
         />
         <Appbar.Content
           title="Favourites"
-          titleStyle={[styles.headerTitle, themedStyles.headerTitle, { color: colors.text === '#333333' ? '#fff' : colors.text }]}
-          color={colors.text === '#333333' ? '#fff' : colors.text}
+          titleStyle={[
+            styles.headerTitle,
+            themedStyles.headerTitle,
+            { color: colors.text === "#333333" ? "#fff" : colors.text },
+          ]}
+          color={colors.text === "#333333" ? "#fff" : colors.text}
         />
         <Appbar.Action
           icon="dots-vertical"
           onPress={openMenu}
-          iconColor={colors.text === '#333333' ? '#fff' : colors.text}
+          iconColor={colors.text === "#333333" ? "#fff" : colors.text}
         />
       </Appbar.Header>
 
@@ -168,6 +185,15 @@ const Favourites: React.FC = () => {
           leadingIcon="cog"
           style={{ backgroundColor: colors.surface }}
           titleStyle={{ color: colors.text }}
+        />
+        <Menu.Item
+          key="menu-item-5"
+          onPress={() => navigateAndCloseMenu("About")}
+          title="About"
+          leadingIcon="info"
+          style={{ backgroundColor: colors.surface }}
+          titleStyle={{ color: colors.text }}
+          accessibilityLabel="Settings - Navigate to app settings"
         />
         <Divider />
         <Menu.Item

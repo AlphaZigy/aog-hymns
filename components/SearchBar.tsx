@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -25,6 +25,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSubmit
 }) => {
   const textInputRef = useRef<TextInput>(null);
+  const [inputValue, setInputValue] = useState<string>(searchQuery || "");
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-focus when search bar appears
   useEffect(() => {
@@ -35,6 +37,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Sync inputValue with searchQuery when it changes from parent
+  useEffect(() => {
+    setInputValue(searchQuery || "");
+  }, [searchQuery]);
 
   // Handle keyboard dismiss
   useEffect(() => {
@@ -52,6 +59,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleCloseIcon = useCallback(() => {
     textInputRef.current?.clear();
+    setInputValue("");
     filterData('');
     
     if (Keyboard.isVisible()) {
@@ -63,21 +71,30 @@ const SearchBar: React.FC<SearchBarProps> = ({
   }, [filterData, setVisible]);
 
   const handleTextChange = useCallback((text: string) => {
-    filterData(text);
+    // Update input immediately for smooth typing
+    setInputValue(text);
+    
+    // Debounce the filtering
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    debounceTimer.current = setTimeout(() => {
+      filterData(text);
+    }, 300);
   }, [filterData]);
 
   const handleSubmitEditing = useCallback(() => {
     if (onSubmit) {
-      onSubmit(searchQuery);
+      onSubmit(inputValue);
     }
     Keyboard.dismiss();
-  }, [onSubmit, searchQuery]);
+  }, [onSubmit, inputValue]);
 
   return (
     <View style={styles.searchContainer}>
       <TextInput
         ref={textInputRef}
-        value={searchQuery}
+        value={inputValue}
         onChangeText={handleTextChange}
         onSubmitEditing={handleSubmitEditing}
         placeholder="Search hymns..."
@@ -119,20 +136,23 @@ export default SearchBar;
 const styles = StyleSheet.create({
   searchBox: {
     fontSize: 16,
-    padding: 4,
-    width: '70%',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    flex: 1,
     color: '#000',
     fontFamily: 'Poppins-Regular',
+    marginRight: 8,
+    width: '100%',
   },
   searchContainer: {
     backgroundColor: lightColors.white,
     flexDirection: 'row',
     borderColor: '#cccccc',
     borderWidth: 1,
-    borderRadius: 30,
-    justifyContent: 'center',
+    borderRadius: 20,
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
+    height: 40,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -141,12 +161,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
+    width: '85%',
   },
   indicator: {
-    marginLeft: 8,
+    marginRight: 4,
   },
   closeIcon: {
-    marginLeft: 8,
     padding: 4,
   }
 });

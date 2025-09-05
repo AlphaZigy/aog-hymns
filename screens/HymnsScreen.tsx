@@ -11,7 +11,11 @@ import {
   Share,
 } from "react-native";
 import { Avatar, Icon, ListItem } from "@rneui/themed";
-import { useNavigation, NavigationProp, useFocusEffect } from "@react-navigation/native";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { FlashList } from "@shopify/flash-list";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -56,12 +60,17 @@ const HymnsScreen: React.FC = () => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [menuVisible, setmenuVisible] = React.useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
-  
+
   // Create themed styles based on current settings - recalculate when settings change
   const themedStyles = useMemo(() => createThemedStyles(settings), [settings]);
-  const colors = useMemo(() => getThemedColors(settings.isDarkMode), [settings.isDarkMode]);
+  const colors = useMemo(
+    () => getThemedColors(settings.isDarkMode),
+    [settings.isDarkMode]
+  );
 
   const openMenu = () => setmenuVisible(true);
 
@@ -103,20 +112,7 @@ const HymnsScreen: React.FC = () => {
     });
   }, [searchQuery]);
 
-  // Debounce search input for better performance
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    const timeoutId = setTimeout(() => {
-      setIsSearching(false);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+  // No debounce needed for instant search
 
   // Cleanup search timeout on unmount
   useEffect(() => {
@@ -135,7 +131,7 @@ const HymnsScreen: React.FC = () => {
           handleBack();
           return true;
         }
-        
+
         // Show professional exit modal
         setShowExitModal(true);
         return true;
@@ -145,7 +141,7 @@ const HymnsScreen: React.FC = () => {
         "hardwareBackPress",
         backAction
       );
-      
+
       return () => backHandler.remove();
     }, [isVisible])
   );
@@ -166,28 +162,31 @@ const HymnsScreen: React.FC = () => {
   }, [iconScale]);
 
   // Debounced search for better performance
-  const filterData = useCallback((text: string): void => {
-    // Clear existing timeout
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    
-    if (!text.trim()) {
-      setSearchQuery("");
-      setIsSearching(false);
-      return;
-    }
-    
-    setIsSearching(true);
-    
-    // Set new timeout for debounced search
-    const newTimeout = setTimeout(() => {
-      setSearchQuery(text);
-      setIsSearching(false);
-    }, 300);
-    
-    setSearchTimeout(newTimeout);
-  }, [searchTimeout]);
+  const filterData = useCallback(
+    (text: string): void => {
+      // Clear existing timeout
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+
+      if (!text.trim()) {
+        setSearchQuery("");
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+
+      // Set new timeout for debounced search
+      const newTimeout = setTimeout(() => {
+        setSearchQuery(text);
+        setIsSearching(false);
+      }, 300);
+
+      setSearchTimeout(newTimeout);
+    },
+    [searchTimeout]
+  );
 
   const handleBack = useCallback((): void => {
     setIsVisible(false);
@@ -197,7 +196,6 @@ const HymnsScreen: React.FC = () => {
   // Optimized render item with React.memo equivalent
   const renderItem = useCallback(
     ({ item }: { item: Hymn }) => {
-      const isHymnFavourite = isFavourite(item.number);
 
       return (
         <TouchableOpacity
@@ -223,13 +221,19 @@ const HymnsScreen: React.FC = () => {
               <HighlightText
                 text={item.title}
                 highlight={searchQuery}
-                style={StyleSheet.flatten([styles.title, themedStyles.listItemTitle])}
+                style={StyleSheet.flatten([
+                  styles.title,
+                  themedStyles.listItemTitle,
+                ])}
                 highlightStyle={styles.highlightText}
               />
               <HighlightText
                 text={`Hymn: ${item.number}`}
                 highlight={searchQuery}
-                style={StyleSheet.flatten([styles.subtitle, themedStyles.listItemSubtitle])}
+                style={StyleSheet.flatten([
+                  styles.subtitle,
+                  themedStyles.listItemSubtitle,
+                ])}
                 highlightStyle={styles.highlightText}
               />
             </View>
@@ -245,16 +249,19 @@ const HymnsScreen: React.FC = () => {
   }, []);
 
   // Add getItemLayout for better performance
-  const getItemLayout = useCallback((data: any, index: number) => ({
-    length: 76,
-    offset: 76 * index,
-    index,
-  }), []);
+  const getItemLayout = useCallback(
+    (data: any, index: number) => ({
+      length: 76,
+      offset: 76 * index,
+      index,
+    }),
+    []
+  );
 
   // Error handling wrapper
   const handleError = useCallback((errorMessage: string) => {
     setError(errorMessage);
-    console.error('HymnsScreen Error:', errorMessage);
+    console.error("HymnsScreen Error:", errorMessage);
   }, []);
 
   // Exit modal handlers
@@ -269,15 +276,13 @@ const HymnsScreen: React.FC = () => {
 
   return (
     <>
-      <StatusBar style={settings.isDarkMode ? "light" : "dark"} hidden={true} />
+      <StatusBar style={settings.isDarkMode ? "dark" : "light"} hidden={true} />
       <ImageBackground
         key={`theme-${settings.isDarkMode}-${settings.fontSize}`}
         source={backgroundImg}
         style={[styles.image]}>
         {/* Dark overlay for dark mode only */}
-        {settings.isDarkMode && (
-          <View style={styles.darkOverlay} />
-        )}
+        {settings.isDarkMode && <View style={styles.darkOverlay} />}
         <Appbar.Header
           style={{ backgroundColor: colors.headerBackground }}
           statusBarHeight={0}>
@@ -285,14 +290,14 @@ const HymnsScreen: React.FC = () => {
             <>
               <Appbar.BackAction
                 onPress={handleBack}
-                color={colors.text === '#333333' ? '#fff' : colors.text}
+                color={colors.text === "#333333" ? "#fff" : colors.text}
                 accessibilityLabel="Close search"
                 accessibilityRole="button"
               />
               <SearchBar
                 setVisible={setIsVisible}
                 filterData={filterData}
-                isSearching={isSearching}
+                isSearching={false}
                 searchQuery={searchQuery}
               />
             </>
@@ -300,19 +305,22 @@ const HymnsScreen: React.FC = () => {
             <>
               <Appbar.Action
                 icon="menu"
-                color={colors.text === '#333333' ? '#fff' : colors.text}
+                color={colors.text === "#333333" ? "#fff" : colors.text}
                 onPress={() => (navigation as any).toggleDrawer?.()}
                 accessibilityLabel="Open menu"
                 accessibilityRole="button"
               />
               <Appbar.Content
                 title="AOG Hymns"
-                titleStyle={[styles.headerTitle, { color: colors.text === '#333333' ? '#fff' : colors.text }]}
-                color={colors.text === '#333333' ? '#fff' : colors.text}
+                titleStyle={[
+                  styles.headerTitle,
+                  { color: colors.text === "#333333" ? "#fff" : colors.text },
+                ]}
+                color={colors.text === "#333333" ? "#fff" : colors.text}
               />
               <Appbar.Action
                 icon="magnify"
-                color={colors.text === '#333333' ? '#fff' : colors.text}
+                color={colors.text === "#333333" ? "#fff" : colors.text}
                 onPress={() => setIsVisible(true)}
                 accessibilityLabel="Open search"
                 accessibilityRole="button"
@@ -326,22 +334,7 @@ const HymnsScreen: React.FC = () => {
             style={[styles.emptyState, { backgroundColor: colors.background }]}
             accessibilityLabel="No hymns found"
             accessibilityRole="text">
-            {isSearching ? (
-              <>
-                <LottieView
-                  source={require("../assets/notfound.json")}
-                  style={styles.searchingAnimation}
-                  autoPlay
-                  loop
-                />
-                <Text 
-                  style={[styles.emptyText, themedStyles.emptyText]}
-                  accessibilityLabel="Searching for hymns"
-                  accessibilityRole="text">
-                  Searching...
-                </Text>
-              </>
-            ) : searchQuery ? (
+            {searchQuery ? (
               <>
                 <LottieView
                   source={require("../assets/notfound.json")}
@@ -349,13 +342,13 @@ const HymnsScreen: React.FC = () => {
                   autoPlay
                   loop={false}
                 />
-                <Text 
+                <Text
                   style={[styles.emptyText, themedStyles.emptyText]}
                   accessibilityLabel={`No hymns found for ${searchQuery}`}
                   accessibilityRole="text">
                   No hymns found for "{searchQuery}"
                 </Text>
-                <Text 
+                <Text
                   style={[styles.emptySubText, themedStyles.emptySubText]}
                   accessibilityLabel="Try searching with different keywords"
                   accessibilityRole="text">
@@ -363,7 +356,7 @@ const HymnsScreen: React.FC = () => {
                 </Text>
               </>
             ) : (
-              <Text 
+              <Text
                 style={[styles.emptyText, themedStyles.emptyText]}
                 accessibilityLabel="No hymns available"
                 accessibilityRole="text">
@@ -388,7 +381,7 @@ const HymnsScreen: React.FC = () => {
           icon="menu"
           style={[styles.fab, { backgroundColor: colors.primary }]}
           onPress={openMenu}
-          color={colors.text === '#333333' ? '#fff' : colors.text}
+          color={colors.text === "#333333" ? "#fff" : colors.text}
           accessibilityLabel="Open menu"
           accessibilityRole="button"
           accessibilityHint="Opens navigation menu with options for Mission Songs, Favourites, Settings, and Share"
@@ -419,12 +412,21 @@ const HymnsScreen: React.FC = () => {
           />
           <Menu.Item
             key="menu-item-4"
-            onPress={() => navigateAndCloseMenu('Settings')}
+            onPress={() => navigateAndCloseMenu("Settings")}
             title="Settings"
             leadingIcon="cog"
             style={{ backgroundColor: colors.surface }}
             titleStyle={{ color: colors.text }}
             accessibilityLabel="Settings - Navigate to app settings"
+          />
+          <Menu.Item
+            key="menu-item-5"
+            onPress={() => navigateAndCloseMenu("About")}
+            title="About"
+            leadingIcon="information"
+            style={{ backgroundColor: colors.surface }}
+            titleStyle={{ color: colors.text }}
+            accessibilityLabel="About - Navigate to about screen"
           />
           <Divider />
           <Menu.Item
@@ -437,7 +439,7 @@ const HymnsScreen: React.FC = () => {
             accessibilityLabel="Share app - Share this app with others"
           />
         </Menu>
-        
+
         {/* Professional Exit Modal */}
         <ExitModal
           visible={showExitModal}
@@ -462,15 +464,15 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    paddingTop: 0, 
+    paddingTop: 0,
   },
   darkOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#1f1f1f',
+    backgroundColor: "#1f1f1f",
     zIndex: 0,
   },
   searchContainer: {
@@ -568,7 +570,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 0,
+    bottom: 50,
   },
   menuAnchorButton: {
     opacity: 0,

@@ -37,7 +37,7 @@ export default function App() {
     const checkAuthentication = async () => {
       if (fontsLoaded) {
         await SplashScreen.hideAsync();
-      } 
+      }  
     };
     checkAuthentication();
   }, [fontsLoaded]);

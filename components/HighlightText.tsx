@@ -18,7 +18,6 @@ const HighlightText: React.FC<HighlightTextProps> = ({
     return <Text style={style}>{text}</Text>;
   }
 
-  // Escape special regex characters and create case-insensitive regex
   const escapedHighlight = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const parts = text.split(new RegExp(`(${escapedHighlight})`, 'gi'));
   

@@ -25,20 +25,32 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import { Icon } from "@rneui/themed";
 import HymnsScreen from "../../screens/HymnsScreen";
+import { useSettings } from "../../context/SettingsContext";
 
 const Drawer = createDrawerNavigator();
 
 const NavigationComponent = () => {
   const backgroundImg = require("../../assets/images/back.png");
+  const backgroundImgDark = require("../../assets/images/dark_back.png");
+  const { settings } = useSettings();
+
+  // Define theme colors based on settings
+  const drawerColors = {
+    backgroundColor: settings.isDarkMode ? "#1f1f1f" : "#eef",
+    headerBackground: settings.isDarkMode ? "#2d2d2d" : "#762006",
+    headerText: settings.isDarkMode ? "#ffffff" : "#ffffff",
+    drawerText: settings.isDarkMode ? "#ffffff" : "#111111",
+    iconColor: settings.isDarkMode ? "#4fc3f7" : "#0000ff",
+  };
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => {
         return (
-          <SafeAreaView>
+          <SafeAreaView style={{ backgroundColor: drawerColors.backgroundColor, flex: 1 }}>
             <ImageBackground
               key="drawer-header"
-              source={backgroundImg}
+              source={settings.isDarkMode ? backgroundImgDark : backgroundImg}
               style={{
                 height: 150,
                 width: "100%",
@@ -101,18 +113,18 @@ const NavigationComponent = () => {
       }}
       screenOptions={{
         drawerStyle: {
-          backgroundColor: "#eef",
+          backgroundColor: drawerColors.backgroundColor,
           width: 200,
         },
         headerStyle: {
-          backgroundColor: "#762006",
+          backgroundColor: drawerColors.headerBackground,
         },
-        headerTintColor: "#ffffff",
+        headerTintColor: drawerColors.headerText,
         headerTitleStyle: {
           fontWeight: "bold",
         },
         drawerLabelStyle: {
-          color: "#111111",
+          color: drawerColors.drawerText,
         },
       }}>
       <Drawer.Screen
@@ -122,7 +134,7 @@ const NavigationComponent = () => {
           title: "Hymns",
           headerShown: false,
           drawerIcon: () => (
-            <FontAwesome5 name="newspaper" size={18} color="#0000ff" />
+            <FontAwesome5 name="newspaper" size={18} color={drawerColors.iconColor} />
           ),
         })}
       />
@@ -163,41 +175,6 @@ const NavigationComponent = () => {
           ),
         })}
       />
-      <Drawer.Screen
-        name="favourites"
-        component={Favourites}
-        options={({ navigation }) => ({
-          title: "Favourites",
-          headerShown: false,
-          drawerIcon: () => <Fontisto name="heart" size={16} color="#0000ff" />,
-          headerLeft: () => (
-            <Icon
-              name="arrow-back"
-              type="material"
-              color="#fff"
-              onPress={() => navigation.goBack()}
-            />
-          ),
-        })}
-      />
-
-      <Drawer.Screen
-        name="About"
-        component={About}
-        options={({ navigation }) => ({
-          title: "About",
-          drawerIcon: () => <Fontisto name="info" size={18} color="#0000ff" />,
-          headerShown: false,
-          headerLeft: () => (
-            <Icon
-              name="arrow-back"
-              type="material"
-              color="#fff"
-              onPress={() => navigation.goBack()}
-            />
-          ),
-        })}
-      />
 
       <Drawer.Screen
         name="MissionSongs"
@@ -205,7 +182,7 @@ const NavigationComponent = () => {
         options={({ navigation }) => ({
           title: "Mission Songs",
           drawerIcon: () => (
-            <Fontisto name="music-note" size={18} color="#0000ff" />
+            <Fontisto name="music-note" size={18} color={drawerColors.iconColor} />
           ),
           headerShown: false,
           headerLeft: () => (
@@ -218,6 +195,24 @@ const NavigationComponent = () => {
           ),
         })}
       />
+      
+      <Drawer.Screen
+        name="favourites"
+        component={Favourites}
+        options={({ navigation }) => ({
+          title: "Favourites",
+          headerShown: false,
+          drawerIcon: () => <Fontisto name="heart" size={16} color={drawerColors.iconColor} />,
+          headerLeft: () => (
+            <Icon
+              name="arrow-back"
+              type="material"
+              color="#fff"
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
 
       <Drawer.Screen
         name="Settings"
@@ -225,8 +220,25 @@ const NavigationComponent = () => {
         options={({ navigation }) => ({
           title: "Settings",
           drawerIcon: () => (
-            <Ionicons name="settings" size={18} color="#0000ff" />
+            <Ionicons name="settings" size={18} color={drawerColors.iconColor} />
           ),
+          headerShown: false,
+          headerLeft: () => (
+            <Icon
+              name="arrow-back"
+              type="material"
+              color="#fff"
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        })}
+      />
+      <Drawer.Screen
+        name="About"
+        component={About}
+        options={({ navigation }) => ({
+          title: "About",
+          drawerIcon: () => <Fontisto name="info" size={18} color={drawerColors.iconColor} />,
           headerShown: false,
           headerLeft: () => (
             <Icon

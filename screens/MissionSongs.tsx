@@ -67,7 +67,7 @@ const MissionSongs = () => {
 
   const navigateAndCloseMenu = (screenName: string) => {
     closeMenu();
-    navigation.navigate(screenName);
+    navigation.navigate(screenName); 
   };
 
   const shareApp = async () => {
@@ -139,25 +139,23 @@ const MissionSongs = () => {
 
   return (
     <>
-      <StatusBar style={settings.isDarkMode ? "light" : "dark"} hidden={true} />
+      <StatusBar style={settings.isDarkMode ? "dark" : "light"} hidden={true} />
       <ImageBackground
         key={`theme-${settings.isDarkMode}-${settings.fontSize}`}
         source={backgroundImg}
         style={[styles.image, themedStyles.container]}>
         {/* Dark overlay for dark mode */}
-        {settings.isDarkMode && (
-          <View style={styles.darkOverlay} />
-        )}
+        {settings.isDarkMode && <View style={styles.darkOverlay} />}
         <Appbar.Header
-          style={{ 
-            backgroundColor: colors.headerBackground, 
+          style={{
+            backgroundColor: colors.headerBackground,
             zIndex: 10,
-            position: 'relative'
+            position: "relative",
           }}
           statusBarHeight={0}>
           <Appbar.Action
             icon="menu"
-            color={colors.text === '#333333' ? '#fff' : colors.text}
+            color={colors.text === "#333333" ? "#fff" : colors.text}
             onPress={() => (navigation as any).toggleDrawer?.()}
             accessibilityLabel="Open navigation menu"
             accessibilityRole="button"
@@ -165,13 +163,17 @@ const MissionSongs = () => {
           />
           <Appbar.Content
             title="Mission Songs"
-            titleStyle={[styles.headerTitle, themedStyles.headerTitle, { color: colors.text === '#333333' ? '#fff' : colors.text }]}
-            color={colors.text === '#333333' ? '#fff' : colors.text}
+            titleStyle={[
+              styles.headerTitle,
+              themedStyles.headerTitle,
+              { color: colors.text === "#333333" ? "#fff" : colors.text },
+            ]}
+            color={colors.text === "#333333" ? "#fff" : colors.text}
           />
           <Appbar.Action
             icon="dots-vertical"
             onPress={openMenu}
-            iconColor={colors.text === '#333333' ? '#fff' : colors.text}
+            iconColor={colors.text === "#333333" ? "#fff" : colors.text}
             accessibilityLabel="Open options menu"
             accessibilityRole="button"
             accessibilityHint="Opens menu with navigation and share options"
@@ -181,14 +183,14 @@ const MissionSongs = () => {
         <View
           style={[
             styles.descriptionContainer,
-            { 
+            {
               backgroundColor: colors.background,
               zIndex: 5,
-              position: 'relative'
+              position: "relative",
             },
           ]}
           accessibilityRole="text">
-          <Text 
+          <Text
             style={[styles.descriptionText, { color: colors.text }]}
             accessibilityLabel="Mission songs description: These are the mission songs of the Back To God Crusade, an outreach arm of the Assemblies Of God Church"
             accessibilityRole="text">
@@ -203,10 +205,10 @@ const MissionSongs = () => {
           renderItem={renderItem}
           contentContainerStyle={[
             styles.listContainer,
-            { 
+            {
               backgroundColor: colors.background,
               zIndex: 5,
-              position: 'relative'
+              position: "relative",
             },
           ]}
           showsVerticalScrollIndicator={false}
@@ -219,11 +221,11 @@ const MissionSongs = () => {
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
-          contentStyle={{ 
-            backgroundColor: colors.surface, 
+          contentStyle={{
+            backgroundColor: colors.surface,
             borderRadius: 8,
             elevation: 8,
-            shadowColor: '#000',
+            shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
             shadowRadius: 4,
@@ -231,7 +233,7 @@ const MissionSongs = () => {
           anchor={{ x: 300, y: 60 }}>
           <Menu.Item
             key="menu-item-1"
-            onPress={() => navigateAndCloseMenu("HymnsScreen")}
+            onPress={() => navigateAndCloseMenu("hymns")}
             title="Hymns"
             leadingIcon="music"
             style={{ backgroundColor: colors.surface }}
@@ -240,7 +242,7 @@ const MissionSongs = () => {
           />
           <Menu.Item
             key="menu-item-2"
-            onPress={() => navigateAndCloseMenu("Favourites")}
+            onPress={() => navigateAndCloseMenu("favourites")}
             title="Favourites"
             leadingIcon="heart"
             style={{ backgroundColor: colors.surface }}
@@ -252,6 +254,15 @@ const MissionSongs = () => {
             onPress={() => navigateAndCloseMenu("Settings")}
             title="Settings"
             leadingIcon="cog"
+            style={{ backgroundColor: colors.surface }}
+            titleStyle={{ color: colors.text }}
+            accessibilityLabel="Settings - Navigate to app settings"
+          />
+          <Menu.Item
+            key="menu-item-5"
+            onPress={() => navigateAndCloseMenu("About")}
+            title="About"
+            leadingIcon="info"
             style={{ backgroundColor: colors.surface }}
             titleStyle={{ color: colors.text }}
             accessibilityLabel="Settings - Navigate to app settings"

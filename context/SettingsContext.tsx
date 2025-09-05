@@ -5,6 +5,7 @@ export interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
   isDarkMode: boolean;
   textSize: number;
+  keepScreenOn: boolean;
 }
 
 interface SettingsContextType {
@@ -18,6 +19,7 @@ const defaultSettings: AppSettings = {
   fontSize: 'medium',
   isDarkMode: false,
   textSize: 16,
+  keepScreenOn: false,
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -62,7 +64,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
       
       // Calculate textSize based on fontSize if fontSize is being updated
       if (newSettings.fontSize) {
-        const textSizes = { small: 14, medium: 16, large: 18 };
+        const textSizes = { small: 13, medium: 16, large: 20 };
         updatedSettings.textSize = textSizes[newSettings.fontSize];
       }
       

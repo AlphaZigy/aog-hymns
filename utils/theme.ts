@@ -15,7 +15,7 @@ export interface ThemedColors {
 }
 
 export const lightTheme: ThemedColors = {
-  background: '#ffffff',
+  background: 'transparent',
   surface: '#ffffff',
   primary: '#762006',
   text: '#333333',
@@ -145,7 +145,7 @@ export const createThemedStyles = (settings: AppSettings) => {
     
     // List item styles
     listItem: {
-      backgroundColor: colors.surface,
+      backgroundColor: 'transparent', 
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderBottomWidth: 1,
