@@ -31,7 +31,22 @@ AOG Hymns is a comprehensive digital hymnal application designed specifically fo
 
 ## 📱 Screenshots
 
-*Screenshots coming soon...*
+<div align="center">
+  <img src="assets/screenshorts/screenshot_1.jpg" alt="Home Screen" width="200" style="margin: 10px;">
+  <img src="assets/screenshorts/screenshot_2.jpg" alt="Hymns List" width="200" style="margin: 10px;">
+  <img src="assets/screenshorts/screenshot_3.jpg" alt="Hymn Details" width="200" style="margin: 10px;">
+  <img src="assets/screenshorts/screenshot_4.jpg" alt="Search Function" width="200" style="margin: 10px;">
+</div>
+
+<div align="center">
+  <img src="assets/screenshorts/screenshot_5.jpg" alt="Favorites" width="200" style="margin: 10px;">
+  <img src="assets/screenshorts/screenshot_6.jpg" alt="Settings" width="200" style="margin: 10px;">
+  <img src="assets/screenshorts/screenshot_7.jpg" alt="Dark Mode" width="200" style="margin: 10px;">
+</div>
+
+<p align="center">
+  <em>Experience the full AOG Hymns app with beautiful UI and intuitive navigation</em>
+</p>
 
 ## 🛠️ Technical Details
 
@@ -123,14 +138,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📞 Support & Contact
-
-For support, feedback, or questions about the app, please reach out:
-
-- **📧 Email**: [info@dubzig.co.zw](mailto:info@dubzig.co.zw)
-- **📱 WhatsApp**: [+263 78 544 7337](https://wa.me/263785447337)
-- **🌐 Website**: [www.dubzig.co.zw](https://www.dubzig.co.zw)
-
 ## 👨‍💻 Developer
 
 <div align="center">
@@ -162,7 +169,7 @@ For support, feedback, or questions about the app, please reach out:
 If this app has blessed you and enhanced your worship experience, consider supporting the developer:
 
 <div align="center">
-  <a href="https://www.buymeacoffee.com/alphazigy" target="_blank">
+  <a href="https://dubzig.co.zw/buymeacoffee/" target="_blank">
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="200">
   </a>
   
