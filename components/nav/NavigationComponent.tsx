@@ -6,7 +6,6 @@ import Favourites from "../../screens/Favourites";
 import ViewMissionsong from "../ViewMissionsong";
 import Settings from "../../screens/Settings";
 import {
-  SafeAreaView,
   ImageBackground,
   Image,
   Text,
@@ -14,6 +13,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   DrawerItemList,
   createDrawerNavigator,

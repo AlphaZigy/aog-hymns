@@ -145,7 +145,7 @@ const About = () => {
                 <View style={styles.appDetails}>
                   <Text style={[styles.appName, { color: colors.primary }]}>AOG Hymns</Text>
                   <Text style={[styles.appVersion, { color: colors.textSecondary }]}>
-                    Version {Constants.expoConfig?.version}
+                    Version {Constants.expoConfig?.version} 
                   </Text>
                   <Text style={[styles.appDescription, { color: colors.text }]}>
                     Digital hymnal songs for the Assemblies of God Church
